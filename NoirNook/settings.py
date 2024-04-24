@@ -44,18 +44,36 @@ INSTALLED_APPS = [
 
     # Built-in applications
     'posts',
+
+    # 3rd party Libraries
+    'rest_framework',
+    'rest_framework.authtoken',
+    "rest_framework_simplejwt",
+
+    'django.contrib.sites',
+
+    'dj_rest_auth',
+    'dj_rest_auth.registration',
+
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.github',
+    'allauth.socialaccount.providers.google',
+
+    'authentication.apps.AuthenticationConfig',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware'
 ]
 
 ROOT_URLCONF = 'NoirNook.urls'
@@ -122,7 +140,72 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(day=60),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": False,
+    "UPDATE_LAST_LOGIN": True,
+    "SIGNING_KEY": os.getenv('SECRET_KEY'),  # generate a key and replace me
+    "ALGORITHM": "HS512",
+}
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Pagination REST settings
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'NoirNook.pagination.StandardResultsPagination',
+    'PAGE_SIZE': 10,
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'dj_rest_auth.jwt_auth.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
+}
+
+SITE_ID = 1
+
+ACCOUNT_EMAIL_REQUIRED = False
+ACCOUNT_EMAIL_VERIFICATION = "none"
+
+REST_AUTH = {
+    'USE_JWT': True,
+    'JWT_AUTH_HTTPONLY': False,
+}
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": os.getenv('AUTH_GOOGLE_ID'),
+            "secret": os.getenv('AUTH_GOOGLE_SECRET'),
+            "key": "",
+        },
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        },
+        "VERIFIED_EMAIL": True,
+    },
+    "github": {
+        "APP": {
+            "client_id": os.getenv('AUTH_GITHUB_ID'),
+            "secret": os.getenv('AUTH_GITHUB_SECRET'),
+            "key": '',
+        },
+        'METHOD': 'oauth2',
+        'SCOPE': ['user:email'],
+    }
+}
