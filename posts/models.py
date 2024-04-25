@@ -8,4 +8,4 @@ class Post(Model):
     title = models.CharField(max_length=256)
     content = models.TextField()
     author_id = models.CharField(max_length=128)
-    image_preview = models.ImageField(upload_to='posts/images', null=False, blank=False)
+    image_preview = models.ImageField(upload_to='posts/images', null=True, blank=True)
