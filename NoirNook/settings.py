@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     # Built-in applications
     'posts',
+    'authentication.apps.AuthenticationConfig',
 
     # 3rd party Libraries
     'rest_framework',
@@ -60,8 +61,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'allauth.socialaccount.providers.google',
-
-    'authentication.apps.AuthenticationConfig',
 ]
 
 MIDDLEWARE = [
@@ -163,7 +162,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Pagination REST settings
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'NoirNook.pagination.StandardResultsPagination',
-    'PAGE_SIZE': 10,
+    'PAGE_SIZE': 20,
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'dj_rest_auth.jwt_auth.JWTAuthentication',
@@ -177,6 +176,7 @@ SITE_ID = 1
 
 ACCOUNT_EMAIL_REQUIRED = False
 ACCOUNT_EMAIL_VERIFICATION = "none"
+ACCOUNT_UNIQUE_EMAIL = False
 
 REST_AUTH = {
     'USE_JWT': True,
