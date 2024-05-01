@@ -1,14 +1,16 @@
 from rest_framework import viewsets, mixins
 from rest_framework.generics import GenericAPIView
+from rest_framework.permissions import AllowAny
 
 from NoirNook.pagination import StandardResultsPagination
 from .models import Post
-from .serializer import PostSerializer, PostListSerializer
+from .serializer import PostSerializer, PostListSerializer, PostSummarizeSerializer
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     pagination_class = StandardResultsPagination
+    permission_classes = [AllowAny]
 
     def get_serializer_class(self):
         if self.action == 'list':
@@ -16,6 +18,9 @@ class PostViewSet(viewsets.ModelViewSet):
         return PostSerializer
 
 
-@api_view(['GET'])
-def test(request):
-    return HttpResponse(f'Request authentication state: {request.user.username}')
+class PostSummarizeView(mixins.RetrieveModelMixin, GenericAPIView):
+    serializer_class = PostSummarizeSerializer
+    queryset = Post.objects.all()
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)

@@ -26,6 +26,15 @@ class PostListSerializer(PostSerializer):
         content = obj.content
         return content[:CONTENT_LIMIT_LENGTH].strip() + (content[CONTENT_LIMIT_LENGTH:] and '...')
 
+
+class PostSummarizeSerializer(PostSerializer):
+    summary = serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'author_id', 'image_preview']
+        fields = ['summary']
+
+    def get_summary(self, obj):
+        content = obj.content
+        summary = summarizer(content, max_length=130, min_length=30, do_sample=False)
+        return summary
