@@ -6,12 +6,13 @@ from rest_framework.permissions import AllowAny
 
 
 class GitHubConnect(SocialConnectView):
+    callback_url = 'http://localhost:5437/auth/callback/github/'
     adapter_class = GitHubOAuth2Adapter
-    callback_url = 'http://localhost:5437/auth/callback/github'
     client_class = OAuth2Client
+    permission_classes = [AllowAny]
 
 
 class GoogleConnect(SocialConnectView):
-    permission_classes = [AllowAny]
     adapter_class = GoogleOAuth2Adapter
     client_class = OAuth2Client
+    permission_classes = [AllowAny]
