@@ -4,13 +4,14 @@ from rest_framework.permissions import AllowAny
 
 from NoirNook.pagination import StandardResultsPagination
 from .models import Post
+from .permissions import IsAuthorOrReadOnly
 from .serializer import PostSerializer, PostListSerializer, PostSummarizeSerializer
 
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     pagination_class = StandardResultsPagination
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthorOrReadOnly]
 
     def get_serializer_class(self):
         if self.action == 'list':
